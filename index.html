@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Colorteio</title>
     <link rel="icon" href="./assets/logo-without-typography.png">
 
@@ -12,7 +11,9 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto,wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -25,30 +26,32 @@
 
         <img id="header-colorteio-logo" src="./assets/logo-with-typography.png" alt="colorteio-logo">
 
-        <button id="language-button" type="button"><img src="./assets/en.png" alt="english-language"></button>
+        <button id="language-button" type="button">
+            <img src="./assets/en.png" alt="english-language">
+        </button>
     </header>
 
     <img id="main-colorteio-logo" src="./assets/logo-with-typography.png" alt="colorteio-logo">
 
     <main>
         <section>
-            <p class="specifications-caption">Draw
-                <input id="quantity-input" class="specifications" type="number" value="1" style="width: 50px; text-align: center;">
+            <p class="specifications-caption">
+                Draw
+                <input id="quantity-input" class="specifications" type="number" value="1">
                 number
             </p>
-            <p class="specifications-caption"> between
-                <input id="min-input" class="specifications" type="number" value="1" style="width: 50px; text-align: center;">
+            <p class="specifications-caption">
+                between
+                <input id="min-input" class="specifications" type="number" value="1">
                 and
-                <input id="max-input" class="specifications" type="number" value="100" style="width: 50px; text-align: center;">
+                <input id="max-input" class="specifications" type="number" value="100">
             </p>
         </section>
 
         <button id="draw-button" type="button">DRAW NOW!</button>
-
     </main>
-</body>
 
-<script src="./scripts.js">
-</script>
+    <script src="./scripts.js"></script>
+</body>
 
 </html>
