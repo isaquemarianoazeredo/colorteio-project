@@ -16,8 +16,8 @@
 </head>
 
 <body>
-  <header>
-    <div id="hamburguer-menu">
+  <header id="site-header">
+    <div id="hamburguer-menu" aria-label="Abrir menu" role="button" tabindex="0">
       <span></span>
       <span></span>
       <span></span>
@@ -25,10 +25,21 @@
 
     <img id="header-colorteio-logo" src="./assets/logo-with-typography.png" alt="colorteio-logo" />
 
-    <button id="language-button" type="button">
+    <button id="language-button" type="button" aria-label="Idioma">
       <img src="./assets/en.png" alt="english-language" />
     </button>
   </header>
+
+  <div id="menu-overlay" class="hidden" aria-hidden="true"></div>
+
+  <nav id="top-menu" class="hidden" aria-hidden="true" role="navigation">
+    <h3>RAFFLES</h3>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true">Number Draw</button>
+      <button class="tab" role="tab" aria-selected="false">Color Draw</button>
+    </div>
+  </nav>
 
   <img id="main-colorteio-logo" src="./assets/logo-with-typography.png" alt="colorteio-logo" />
 
@@ -53,10 +64,10 @@
   <section id="result-container" aria-live="polite" role="status">
     <h2 id="result-message" aria-atomic="true"></h2>
     <p id="subtext" aria-atomic="true"></p>
+
     <button id="play-again" type="button">Play Again</button>
   </section>
 
   <script src="./scripts.js"></script>
 </body>
-
 </html>
