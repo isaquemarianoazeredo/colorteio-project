@@ -10,8 +10,62 @@ const topMenu = document.querySelector("#top-menu");
 const menuOverlay = document.querySelector("#menu-overlay");
 const header = document.querySelector("#site-header");
 const tabs = document.querySelectorAll(".tab");
+const mainContent = document.querySelector("#main-content");
 
-drawButton.addEventListener("click", generateNumbers);
+let currentMode = "number";
+
+function setMenuPositions() {
+  if (!header || !topMenu || !menuOverlay) return;
+  const headerHeight = Math.ceil(header.getBoundingClientRect().height);
+
+  topMenu.style.top = `${headerHeight}px`;
+  menuOverlay.style.top = `${headerHeight}px`;
+}
+
+setMenuPositions();
+window.addEventListener("resize", setMenuPositions);
+
+function loadNumberDraw() {
+  mainContent.innerHTML = `
+    <p class="specifications-caption">
+      Draw
+      <input id="quantity-input" class="specifications" type="number" value="1" />
+      number
+    </p>
+    <p class="specifications-caption">
+      between
+      <input id="min-input" class="specifications" type="number" value="1" />
+      and
+      <input id="max-input" class="specifications" type="number" value="100" />
+    </p>
+  `;
+  currentMode = "number";
+}
+
+function loadColorDraw() {
+  mainContent.innerHTML = `
+    <p class="specifications-caption">
+      Draw
+      <input id="quantity-input" class="specifications" type="number" value="1" />
+      color
+    </p>
+    <p class="specifications-caption">
+      using
+      <select id="color-type" class="specifications">
+        <option value="name">Name</option>
+        <option value="hex">HEX</option>
+        <option value="rgb">RGB</option>
+        <option value="hsl">HSL</option>
+      </select>
+    </p>
+  `;
+  currentMode = "color";
+}
+
+drawButton.addEventListener("click", () => {
+  if (currentMode === "number") generateNumbers();
+  else generateColors();
+});
 
 function generateNumbers() {
   const quantity = parseInt(document.querySelector("#quantity-input").value) || 1;
@@ -24,6 +78,66 @@ function generateNumbers() {
     results.push(number);
   }
 
+  showResult(
+    `🎲 ${results.join(", ")}`,
+    quantity > 1
+      ? `Você sorteou ${quantity} números entre ${min} e ${max}.`
+      : `Você sorteou um número entre ${min} e ${max}.`
+  );
+}
+
+function generateColors() {
+  const quantity = parseInt(document.querySelector("#quantity-input").value) || 1;
+  const typeEl = document.querySelector("#color-type");
+  const type = typeEl ? typeEl.value : "name";
+  const results = [];
+
+  for (let i = 0; i < quantity; i++) {
+    let color;
+    switch (type) {
+      case "name":
+        const names = ["red", "blue", "green", "yellow", "purple", "pink", "black", "white", "gray", "orange"];
+        color = names[Math.floor(Math.random() * names.length)];
+        break;
+      case "hex":
+        color = "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0");
+        break;
+      case "rgb":
+        color = `rgb(${rand255()}, ${rand255()}, ${rand255()})`;
+        break;
+      case "hsl":
+        color = `hsl(${Math.floor(Math.random() * 360)}, ${randPercent()}%, ${randPercent()}%)`;
+        break;
+      default:
+        color = "transparent";
+    }
+    results.push(color);
+  }
+
+  const colorHTML = results
+    .map((c) => `
+      <span class="color-result">
+        <span class="color-square" style="background:${c};"></span>${c}
+      </span>
+    `)
+    .join("");
+
+  showResult(
+    colorHTML,
+    quantity > 1
+      ? `Você sorteou ${quantity} cores no formato ${String(type).toUpperCase()}.`
+      : `Você sorteou uma cor no formato ${String(type).toUpperCase()}.`
+  );
+}
+
+function rand255() {
+  return Math.floor(Math.random() * 256);
+}
+function randPercent() {
+  return Math.floor(Math.random() * 101);
+}
+
+function showResult(resultHTML, subText) {
   choicesSection.style.opacity = "0";
   choicesSection.style.transform = "translateY(8px) scale(0.98)";
   mainColorteioLogo.style.opacity = "0";
@@ -32,13 +146,8 @@ function generateNumbers() {
   setTimeout(() => {
     choicesSection.classList.add("hidden");
     mainColorteioLogo.classList.add("hidden");
-
-    resultMessage.textContent = `🎲 ${results.join(", ")}`;
-    subtext.textContent =
-      quantity > 1
-        ? `Você sorteou ${quantity} números entre ${min} e ${max}.`
-        : `Você sorteou um número entre ${min} e ${max}.`;
-
+    resultMessage.innerHTML = resultHTML;
+    subtext.textContent = subText;
     resultContainer.classList.add("active");
   }, 600);
 }
@@ -49,7 +158,6 @@ playAgainBtn.addEventListener("click", () => {
   setTimeout(() => {
     choicesSection.classList.remove("hidden");
     mainColorteioLogo.classList.remove("hidden");
-
     choicesSection.style.opacity = "0";
     choicesSection.style.transform = "translateY(8px) scale(0.98)";
     mainColorteioLogo.style.opacity = "0";
@@ -75,14 +183,21 @@ playAgainBtn.addEventListener("click", () => {
   }, 480);
 });
 
-function setMenuPositions() {
-  const headerHeight = header.getBoundingClientRect().height;
-  topMenu.style.top = `${headerHeight}px`;
-  menuOverlay.style.top = `${headerHeight}px`;
-}
+tabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    tabs.forEach((t) => {
+      t.classList.remove("active");
+      t.setAttribute("aria-selected", "false");
+    });
+    tab.classList.add("active");
+    tab.setAttribute("aria-selected", "true");
 
-setMenuPositions();
-window.addEventListener("resize", setMenuPositions);
+    if (tab.textContent.trim() === "Number Draw") loadNumberDraw();
+    else loadColorDraw();
+  });
+});
+
+loadNumberDraw();
 
 hamburguerMenu.addEventListener("click", toggleMenu);
 hamburguerMenu.addEventListener("keydown", (e) => {
@@ -91,15 +206,17 @@ hamburguerMenu.addEventListener("keydown", (e) => {
     toggleMenu();
   }
 });
+menuOverlay.addEventListener("click", closeMenu);
 
 function toggleMenu() {
-  const isActive = hamburguerMenu.classList.toggle("active");
+  const isOpen = hamburguerMenu.classList.toggle("active");
 
-  if (isActive) {
+  setMenuPositions();
+
+  if (isOpen) {
     topMenu.classList.remove("hidden");
-    topMenu.setAttribute("aria-hidden", "false");
     menuOverlay.classList.remove("hidden");
-    menuOverlay.setAttribute("aria-hidden", "false");
+    document.body.classList.add("menu-open");
 
     requestAnimationFrame(() => {
       topMenu.style.opacity = "1";
@@ -107,41 +224,24 @@ function toggleMenu() {
       menuOverlay.style.opacity = "1";
     });
 
-    document.body.classList.add("menu-open");
+    const firstTab = topMenu.querySelector(".tab");
+    if (firstTab) firstTab.focus();
   } else {
+    closeMenu();
+  }
+}
+
+function closeMenu() {
+  hamburguerMenu.classList.remove("active");
+  topMenu.style.opacity = "0";
+  topMenu.style.transform = "translateY(-8px)";
+  menuOverlay.style.opacity = "0";
+  document.body.classList.remove("menu-open");
+
+  setTimeout(() => {
     topMenu.classList.add("hidden");
-    topMenu.setAttribute("aria-hidden", "true");
     menuOverlay.classList.add("hidden");
-    menuOverlay.setAttribute("aria-hidden", "true");
-
-    document.body.classList.remove("menu-open");
-  }
+  }, 320);
 }
 
-menuOverlay.addEventListener("click", () => {
-  if (hamburguerMenu.classList.contains("active")) {
-    toggleMenu();
-  }
-});
-
-tabs.forEach((t) => {
-  t.addEventListener("click", () => {
-    tabs.forEach((x) => {
-      x.classList.remove("active");
-      x.setAttribute("aria-selected", "false");
-    });
-    t.classList.add("active");
-    t.setAttribute("aria-selected", "true");
-  });
-});
-
-if (tabs.length > 0) {
-  tabs.forEach((x, i) => {
-    if (i === 0) {
-      x.classList.add("active");
-      x.setAttribute("aria-selected", "true");
-    } else {
-      x.setAttribute("aria-selected", "false");
-    }
-  });
-}
+window.addEventListener("orientationchange", setMenuPositions);
