@@ -13,16 +13,19 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   transition: filter 0.3s ease;
+  padding-top: 80px;
 }
 
 header {
   width: 100%;
-  padding: 10px 20px;
+  height: 72px;
+  padding: 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 400;
   backdrop-filter: blur(15px);
@@ -73,6 +76,7 @@ header {
   position: fixed;
   left: 0;
   right: 0;
+  top: 72px;
   z-index: 350;
   display: flex;
   flex-direction: column;
@@ -198,8 +202,9 @@ body.menu-open #result-container {
 
 #main-colorteio-logo {
   display: block;
-  margin: 80px auto 20px;
+  margin: 80px auto 24px;
   height: 140px;
+  max-width: 90%;
   border-radius: 16px;
   backdrop-filter: blur(15px);
   background: rgba(255, 255, 255, 0.15);
@@ -212,14 +217,19 @@ body.menu-open #result-container {
 }
 
 main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+  width: min(90%, 480px);
   backdrop-filter: blur(25px);
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 15px 60px rgba(0, 0, 0, 0.25);
   border-radius: 20px;
-  width: 380px;
   padding: 40px 25px;
-  text-align: center;
   transition: opacity 0.45s ease, transform 0.45s ease, filter 0.35s ease;
   position: relative;
   z-index: 1;
@@ -287,7 +297,9 @@ main {
   top: 50%;
   left: 50%;
   width: min(88%, 480px);
+  max-width: 480px;
   transform: translate(-50%, -50%) scale(0.98);
+  transform-origin: center center;
   padding: 1.6rem 1.8rem;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.15);
@@ -297,7 +309,9 @@ main {
   text-align: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.45s ease, transform 0.45s ease;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
   z-index: 500;
 }
 
@@ -388,4 +402,38 @@ main {
 
 .hidden {
   display: none !important;
+}
+
+@media (max-width: 768px) {
+  header {
+    height: 64px;
+    padding: 0 16px;
+  }
+
+  #main-colorteio-logo {
+    height: 110px;
+    margin: 70px auto 20px;
+  }
+
+  main {
+    width: min(92%, 360px);
+    padding: 28px 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    height: 60px;
+    padding: 0 12px;
+  }
+
+  #main-colorteio-logo {
+    height: 90px;
+    margin: 60px auto 16px;
+  }
+
+  main {
+    width: 95%;
+    padding: 24px 18px;
+  }
 }
